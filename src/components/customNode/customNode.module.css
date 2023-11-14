@@ -1,40 +1,52 @@
 .textUpdaterNode {
-  padding: 10px 0px;
-  border-radius: 3px;
-  width: 148px;
-  font-size: 12px;
+  padding: 12px 0px;
+  /* border-radius: 8px; */
+  width: 220px;
+  font-size: 16px;
   color: #222;
   text-align: center;
-  border-width: 1px;
+  /* border-width: 2px;
   border-style: solid;
   border-color: #1a192b;
-  background-color: white;
+  background-color: white; */
+
+  background: #eee;
+  border: 2px solid #555;
+  border-radius: 5px;
 }
 
 .textUpdaterNodeWarning {
-  padding: 10px 0px;
-  border-radius: 3px;
-  width: 146px;
-  font-size: 12px;
+  padding: 12px 0px;
+  /* border-radius: 8px; */
+  width: 220px;
+  font-size: 16px;
   color: #222;
   text-align: center;
   border-width: 2px;
-  border-style: solid;
+  /* border-style: solid;
   border-color: #fadb14;
-  background-color: #feffe6;
+  background-color: #feffe6; */
+
+  background: #fffbe6;
+  border: 2px solid #faad14;
+  border-radius: 5px;
 }
 
 .textUpdaterNodeError {
-  padding: 10px 0px;
-  border-radius: 3px;
-  width: 146px;
-  font-size: 12px;
+  padding: 12px 0px;
+  /* border-radius: 8px; */
+  width: 220px;
+  font-size: 16px;
   color: #222;
   text-align: center;
   border-width: 2px;
-  border-style: solid;
+  /* border-style: solid;
   border-color: #f5222d;
-  background-color: #fff1f0;
+  background-color: #fff1f0; */
+
+  background: #fff2e8;
+  border: 2px solid #fa541c;
+  border-radius: 5px;
 }
 
 .contentPopover p {
@@ -46,4 +58,18 @@
 }
 .contentPopoverTextError {
   color: #f5222d;
+}
+
+.antdSelect {
+  width: 180px;
+}
+
+.antdIcon {
+  margin: 0px 0px 0px 7px;
+  font-size: 18px;
+}
+
+.antdButton {
+  width: 200px;
+  margin: 3px 0px 6px 0px;
 }

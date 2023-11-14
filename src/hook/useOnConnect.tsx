@@ -64,7 +64,7 @@ export function useOnConnect(
                 ...node.data,
                 inletThrust: (parentOutletThrust + sourceNode.data.outletThrust) / (otherConnections.length + 1),
                 outletThrust: recalculationOutletThrust / (otherConnections.length + 1),
-                parentNode: source
+                parentNode: source,
               },
             };
           }
@@ -74,7 +74,12 @@ export function useOnConnect(
         return updatedNodes;
       });
 
-      setEdges((prevEdges) => addEdge(params, prevEdges));
+      const newParams: any = {
+        ...params,
+        type: 'custom',
+      };
+
+      setEdges((prevEdges) => addEdge(newParams, prevEdges));
     },
     [nodes],
   );

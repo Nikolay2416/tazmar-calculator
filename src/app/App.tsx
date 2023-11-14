@@ -1,13 +1,17 @@
 import { FC } from 'react';
+import { ReactFlowProvider } from 'reactflow';
 import { Flow } from '../components/flow/Flow';
 
-import s from './app.module.css';
+import 'reactflow/dist/style.css';
+import './app.css';
 
 const App: FC = () => {
   return (
-    <div className={s.app}>
+    // <div className={cls.app}>
+    <ReactFlowProvider>
       <Flow />
-    </div>
+    </ReactFlowProvider>
+    // </div>
   );
 };
 
