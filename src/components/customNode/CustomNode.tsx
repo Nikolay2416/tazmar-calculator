@@ -17,11 +17,6 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
   const { setNodes, getEdges, deleteElements, getNodes } = useReactFlow();
   const [valueSelect, setValueSelect] = useState<string>(label);
   const [оnConnectTarget, setOnConnectTarget] = useState<string>('');
-  useEffect(() => {
-    setOnConnectTarget(id);
-  }, [valueSelect]);
-  useUpdateChildNode(getNodes(), setNodes, getEdges(), setOnConnectTarget, id); 
-  // useUpdateChildNode(getNodes(), setNodes, getEdges(), setOnConnectTarget, оnConnectTarget); 
 
   let styleBlock: string = cls.textUpdaterNodeDefolt;
   let styleWorkingLoad: string = cls.contentPopoverText;
@@ -46,6 +41,12 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
   if (inletThrust > loadLimit) {
     styleLoadLimit = cls.contentPopoverTextError;
   }
+
+  useEffect(() => {
+    setOnConnectTarget(id);
+  }, [valueSelect]);
+
+  useUpdateChildNode(id, setOnConnectTarget);
 
   useEffect(() => {
     const value = equipment.find((item: Equipment) => item.value === valueSelect);
@@ -77,7 +78,6 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
       });
       return updatedNodes;
     });
-    // setOnConnectTarget(id)
   }, [valueSelect]);
 
   const onClickRemove = (id: string) => {

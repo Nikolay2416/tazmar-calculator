@@ -36,13 +36,12 @@ export function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
 
-  const onConnect: OnConnect = useOnConnect(nodes, setNodes, edges, setEdges, setOnConnectTarget);
-  useUpdateChildNode(nodes, setNodes, edges, setOnConnectTarget, оnConnectTarget);
-  // useUpdateChildNode(nodes, setNodes, edges, setOnConnectTarget, '0');
-
   const firstLocationNode: number = reactFlowWrapper.current?.clientWidth
     ? reactFlowWrapper.current.clientWidth / 2 - 111.5
     : 0;
+
+  const onConnect: OnConnect = useOnConnect(nodes, setNodes, edges, setEdges, setOnConnectTarget);
+  useUpdateChildNode(оnConnectTarget, setOnConnectTarget);
 
   useEffect(() => {
     if (firstLocationNode && nodes.length === 0) {
@@ -68,14 +67,6 @@ export function Flow() {
       });
     }
   }, [firstLocationNode]);
-
-  // useEffect(() => {
-  //   if (оnConnectTarget) {
-  //     updateAllChildNodes(nodes, setNodes, edges, setOnConnectTarget, оnConnectTarget);
-  //   }
-  // }, [nodes, edges]);
-
-  // console.log(edges);
 
   const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
     if (!nodeId) return;

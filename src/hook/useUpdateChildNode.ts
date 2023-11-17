@@ -1,30 +1,25 @@
 import { useEffect, Dispatch, SetStateAction, useState } from 'react';
-import { Node, Edge } from 'reactflow';
+import { useReactFlow } from 'reactflow';
 
-export function useUpdateChildNode(
-  nodes: Node[],
-  setNodes: Dispatch<SetStateAction<Node[]>>,
-  edges: Edge[],
-  setOnConnectTarget: Dispatch<SetStateAction<string>>,
-  оnConnectTarget: string,
-) {
+export function useUpdateChildNode(оnConnectTarget: string, setOnConnectTarget: Dispatch<SetStateAction<string>>) {
+  const { getEdges, getNodes, setNodes } = useReactFlow();
+  const nodes = getNodes();
+  const edges = getEdges();
+
   useEffect(() => {
     if (оnConnectTarget) {
       updateAllChildNodes(оnConnectTarget);
     }
+    console.log('!');
   }, [nodes, edges]);
 
   const updateAllChildNodes = (targetId: string) => {
     const parentEdges = edges.filter((edge) => edge.source === targetId);
 
-    console.log(targetId)
-
     if (parentEdges.length === 0) {
       setOnConnectTarget('');
       return;
     }
-
-    console.log(targetId);
 
     parentEdges.forEach((edge) => {
       const childNode = nodes.find((node) => node.id === edge.target);
