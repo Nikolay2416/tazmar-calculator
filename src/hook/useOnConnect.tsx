@@ -16,7 +16,8 @@ export function useOnConnect(
 
       const childEdges = edges.filter((edge) => edge.source === target);
       if (childEdges.length > 0 && target) {
-        setOnConnectTarget(target);
+        // setOnConnectTarget(target);
+        setOnConnectTarget('0');
       }
 
       const otherConnections = edges.filter((edge) => edge.source === source);
@@ -34,19 +35,6 @@ export function useOnConnect(
 
       setNodes((prevNodes) => {
         const updatedNodes = prevNodes.map((node) => {
-          for (let i = 0; i < otherConnections.length; i++) {
-            if (node.id === otherConnections[i].target) {
-              return {
-                ...node,
-                data: {
-                  ...node.data,
-                  inletThrust: sourceNode.data.outletThrust / (otherConnections.length + 1),
-                  outletThrust: sourceNode.data.outletThrust / (otherConnections.length + 1),
-                },
-              };
-            }
-          }
-
           if (node.id === target) {
             let recalculationOutletThrust;
 
@@ -68,6 +56,20 @@ export function useOnConnect(
               },
             };
           }
+
+          for (let i = 0; i < otherConnections.length; i++) {
+            if (node.id === otherConnections[i].target) {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  inletThrust: sourceNode.data.outletThrust / (otherConnections.length + 1),
+                  outletThrust: sourceNode.data.outletThrust / (otherConnections.length + 1),
+                },
+              };
+            }
+          }
+
           return node;
         });
 

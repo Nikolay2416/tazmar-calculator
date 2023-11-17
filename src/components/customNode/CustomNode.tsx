@@ -3,18 +3,49 @@ import { Handle, Position, useReactFlow, NodeProps } from 'reactflow';
 import { Popover, Select, Button, ConfigProvider } from 'antd';
 import { UnorderedListOutlined } from '@ant-design/icons';
 
+import { useUpdateChildNode } from '../../hook/useUpdateChildNode';
 import { equipment } from '../../data/equipment';
 import { Equipment, StatusType } from '../../type/type';
 
 import cls from './customNode.module.css';
-import './customNode.css';
+import './reactFlowCustomNode.css';
 
 export const nodeTypes = { custom: CustomNode };
 
 export function CustomNode({ id, data, isConnectable }: NodeProps) {
-  const { setNodes, getEdges, setEdges } = useReactFlow();
   const { label, inletThrust, outletThrust, workingLoad, loadLimit } = data;
+  const { setNodes, getEdges, deleteElements, getNodes } = useReactFlow();
   const [valueSelect, setValueSelect] = useState<string>(label);
+  const [оnConnectTarget, setOnConnectTarget] = useState<string>('');
+  useEffect(() => {
+    setOnConnectTarget(id);
+  }, [valueSelect]);
+  useUpdateChildNode(getNodes(), setNodes, getEdges(), setOnConnectTarget, id); 
+  // useUpdateChildNode(getNodes(), setNodes, getEdges(), setOnConnectTarget, оnConnectTarget); 
+
+  let styleBlock: string = cls.textUpdaterNodeDefolt;
+  let styleWorkingLoad: string = cls.contentPopoverText;
+  let styleLoadLimit: string = cls.contentPopoverText;
+  let selectBg: string = '#eee';
+  let statusType: StatusType = '';
+
+  if (inletThrust > loadLimit) {
+    statusType = 'error';
+    selectBg = '#fff2e8';
+    styleBlock = cls.textUpdaterNodeError;
+  } else if (inletThrust > workingLoad) {
+    statusType = 'warning';
+    selectBg = '#fffbe6';
+    styleBlock = cls.textUpdaterNodeWarning;
+  }
+
+  if (inletThrust > workingLoad) {
+    styleWorkingLoad = cls.contentPopoverTextError;
+  }
+
+  if (inletThrust > loadLimit) {
+    styleLoadLimit = cls.contentPopoverTextError;
+  }
 
   useEffect(() => {
     const value = equipment.find((item: Equipment) => item.value === valueSelect);
@@ -46,46 +77,12 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
       });
       return updatedNodes;
     });
+    // setOnConnectTarget(id)
   }, [valueSelect]);
 
-  let styleBlock = cls.textUpdaterNode;
-  let styleWorkingLoad = cls.contentPopoverText;
-  let styleLoadLimit = cls.contentPopoverText;
-  let selectBg = '#eee';
-  let statusType: StatusType = '';
-
-  if (inletThrust > loadLimit) {
-    statusType = 'error';
-    selectBg = '#fff2e8';
-    styleBlock = cls.textUpdaterNodeError;
-  } else if (inletThrust > workingLoad) {
-    statusType = 'warning';
-    selectBg = '#fffbe6';
-    styleBlock = cls.textUpdaterNodeWarning;
-  }
-
-  if (inletThrust > workingLoad) {
-    styleWorkingLoad = cls.contentPopoverTextError;
-  }
-
-  if (inletThrust > loadLimit) {
-    styleLoadLimit = cls.contentPopoverTextError;
-  }
-
-  const onEdgeClick = (evt: any, id: any) => {
-    evt.stopPropagation();
-    const edges = getEdges();
-    const otherConnections = edges.filter((edge) => edge.source === id || edge.target === id);
-
-    // Доделать
-    // console.log(otherConnections)
-
-    otherConnections.forEach((connection) => {
-      setEdges((prevEdges) => prevEdges.filter((edge) => edge.id !== connection.id));
-    });
-
-    // setEdges((edg) => edg.filter((edg) => edg.id !== otherConnections?.id));
-    setNodes((nds) => nds.filter((node) => node.id !== id));
+  const onClickRemove = (id: string) => {
+    const otherConnections = getEdges().filter((edge) => edge.source === id || edge.target === id);
+    deleteElements({ nodes: [{ id }], edges: otherConnections });
   };
 
   const content = (
@@ -94,14 +91,14 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
       <p>Выходная тяга: {Math.round(outletThrust * 100) / 100}тс</p>
       <p className={styleWorkingLoad}>Рабочая нагрузка: {workingLoad}тс</p>
       <p className={styleLoadLimit}>Максимальная нагрузка: {loadLimit}тс</p>
-      <Button className={cls.antdButton} danger onClick={(evt) => onEdgeClick(evt, id)}>
+      <Button className={cls.antdButton} danger onClick={() => onClickRemove(id)}>
         Удалить
       </Button>
     </div>
   );
 
   return (
-    <div className={styleBlock}>
+    <div className={`${styleBlock} ${cls.textUpdaterNode}`}>
       {label !== 'Экскаватор' && <Handle type="target" position={Position.Top} isConnectable={isConnectable} />}
       <ConfigProvider
         theme={{
@@ -127,82 +124,3 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
     </div>
   );
 }
-
-
-
-
-// const [open, setOpen] = useState(false);
-
-// const hide = () => {
-//   setOpen(false);
-// };
-
-// const handleOpenChange = (newOpen: boolean) => {
-//   setOpen(newOpen);
-// };
-
-// <Select className={cls.antdSelect} onChange={(value) => {
-//   setValueSelect(value);
-//   hide();
-// }} options={equipment} />
-// <Popover content={content} trigger="click" placement="top" open={open} onOpenChange={handleOpenChange}>
-
-// import { Handle, Position } from 'reactflow';
-// import { Popover } from 'antd';
-
-// import { Equipment } from '../../type/type';
-
-// import cls from './customNode.module.css';
-
-// interface ModuleProps {
-//   data: Equipment;
-//   isConnectable: boolean;
-// }
-
-// export const nodeTypes = { custom: CustomNode };
-
-// export function CustomNode({ data, isConnectable }: ModuleProps) {
-//   const { label, inletThrust, outletThrust, workingLoad, loadLimit } = data;
-//   let styleBlock;
-//   let styleWorkingLoad;
-//   let styleLoadLimit;
-
-//   if (inletThrust > loadLimit) {
-//     styleBlock = cls.textUpdaterNodeError;
-//   } else if (inletThrust > workingLoad) {
-//     styleBlock = cls.textUpdaterNodeWarning;
-//   } else {
-//     styleBlock = cls.textUpdaterNode;
-//   }
-
-//   if (inletThrust > workingLoad) {
-//     styleWorkingLoad = cls.contentPopoverTextError;
-//   } else {
-//     styleWorkingLoad = cls.contentPopoverText;
-//   }
-
-//   if (inletThrust > loadLimit) {
-//     styleLoadLimit = cls.contentPopoverTextError;
-//   } else {
-//     styleLoadLimit = cls.contentPopoverText;
-//   }
-
-//   const content = (
-//     <div className={cls.contentPopover}>
-//       <p>Входная тяга: {Math.round(inletThrust * 100) / 100}тс</p>
-//       <p>Выходная тяга: {Math.round(outletThrust * 100) / 100}тс</p>
-//       <p className={styleWorkingLoad}>Рабочая нагрузка: {workingLoad}тс</p>
-//       <p className={styleLoadLimit}>Максимальная нагрузка: {loadLimit}тс</p>
-//     </div>
-//   );
-
-//   return (
-//     <Popover content={content} trigger="click" placement="right">
-//       <div className={styleBlock}>
-//         <Handle type="target" position={Position.Top} isConnectable={isConnectable} />
-//         <div>{label}</div>
-//         <Handle type="source" position={Position.Bottom} id="b" isConnectable={isConnectable} />
-//       </div>
-//     </Popover>
-//   );
-// }

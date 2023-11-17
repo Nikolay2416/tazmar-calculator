@@ -1,8 +1,3 @@
-/* html, body {
-  margin: 0;
-} */
-
-
 html, body, #root {
   width: 100%;
   height: 100%;
@@ -12,8 +7,6 @@ html, body, #root {
   font-family: sans-serif;
 }
 
-
-/* .app {
-  height: 97vh;
-  width: 100vw;
-} */
+p {
+  margin: 0;
+}

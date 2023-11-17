@@ -7,11 +7,9 @@ import './app.css';
 
 const App: FC = () => {
   return (
-    // <div className={cls.app}>
     <ReactFlowProvider>
       <Flow />
     </ReactFlowProvider>
-    // </div>
   );
 };
 

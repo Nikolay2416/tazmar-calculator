@@ -1,11 +1,3 @@
-/* .flow {
-  display: flex;
-  justify-content: start;
-  height: 100%;
-  width: 100%;
-  margin-top: 10px;
-} */
-
 .bodyReactFlow {
   margin: auto;
   height: 99.8%;
@@ -15,17 +7,4 @@
 
 .reactFlow {
   background: #1A192B;
-}
-
-.bodyEquipmentSelection {
-  margin: 0px 20px;
-}
-
-.antdSelect {
-  width: 200px;
-}
-
-.antdButton {
-  width: 200px;
-  margin: 10px 0px;
 }

@@ -4,17 +4,9 @@ import './customEdge.css';
 
 export const edgeTypes = { custom: CustomEdge };
 
-export function CustomEdge({
-  id,
-  sourceX,
-  sourceY,
-  targetX,
-  targetY,
-  sourcePosition,
-  targetPosition,
-  style = {},
-  markerEnd,
-}: EdgeProps) {
+export function CustomEdge(props: EdgeProps) {
+  const { id, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, style = {}, markerEnd } = props;
+  const { deleteElements } = useReactFlow();
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -23,13 +15,6 @@ export function CustomEdge({
     targetY,
     targetPosition,
   });
-
-  const { setEdges } = useReactFlow();
-
-  const onEdgeClick = (evt: any, id: any) => {
-    evt.stopPropagation();
-    setEdges((edg) => edg.filter((edg) => edg.id !== id));
-  };
 
   return (
     <>
@@ -44,7 +29,7 @@ export function CustomEdge({
           }}
           className="nodrag nopan"
         >
-          <button className="edgebutton" onClick={(event) => onEdgeClick(event, id)}>
+          <button className="edgebutton" onClick={() => deleteElements({ edges: [{ id }] })}>
             ×
           </button>
         </div>
