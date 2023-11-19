@@ -1,10 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import ReactFlow, {
   Controls,
-  Background,
   Node,
   Edge,
-  OnConnect,
   OnConnectStart,
   OnConnectEnd,
   useNodesState,
@@ -18,13 +16,15 @@ import { useUpdateChildNode } from '../../hook/useUpdateChildNode';
 import { nodeTypes } from '../customNode/CustomNode';
 import { edgeTypes } from '../customEdge/CustomEdge';
 import { equipment } from '../../data/equipment';
+import { Equipment } from '../../type/type';
 
 import cls from './flow.module.css';
 
+const equipmentExcavator = equipment.find((item: Equipment) => item.value === 'Экскаватор');
 const initialNodes: Node = {
   id: '0',
   type: 'custom',
-  data: equipment[0],
+  data: equipmentExcavator,
   position: { x: 0, y: 20 },
 };
 
@@ -40,7 +40,7 @@ export function Flow() {
     ? reactFlowWrapper.current.clientWidth / 2 - 111.5
     : 0;
 
-  const onConnect: OnConnect = useOnConnect(nodes, setNodes, edges, setEdges, setOnConnectTarget);
+  const onConnect = useOnConnect(setOnConnectTarget);
   useUpdateChildNode(оnConnectTarget, setOnConnectTarget);
 
   useEffect(() => {
@@ -80,6 +80,7 @@ export function Flow() {
       const parentNode = getNode(connectingNodeId.current);
       const edges = getEdges();
       const otherConnections = edges.filter((edge) => edge.source === parentNode?.id);
+      const equipmentD19 = equipment.find((item: Equipment) => item.value === 'д19,5мм -120м 2шт');
 
       if (targetIsPane && reactFlowWrapper.current) {
         const { top, left } = reactFlowWrapper.current.getBoundingClientRect();
@@ -88,12 +89,10 @@ export function Flow() {
         const newNode: Node = {
           id,
           data: {
-            ...equipment[5],
+            ...equipmentD19,
             parentNode: parentNode?.id,
             inletThrust: parentNode?.data.outletThrust / (otherConnections.length + 1),
             outletThrust: parentNode?.data.outletThrust / (otherConnections.length + 1),
-            // inletThrust: parentNode?.data.outletThrust,
-            // outletThrust: parentNode?.data.outletThrust,
           },
           position: project({
             x: (event as MouseEvent).clientX - left - 111.5,
@@ -102,8 +101,6 @@ export function Flow() {
           type: 'custom',
         };
 
-        // console.log(parentNode?.data.outletThrust / (otherConnections.length + 1))
-        // console.log(parentNode?.data.outletThrust / (otherConnections.length + 1))
         setNodes((nds) => nds.concat(newNode));
 
         if (parentNode?.id) {
@@ -120,8 +117,6 @@ export function Flow() {
                     ...node.data,
                     inletThrust: parentNode?.data.outletThrust / (otherConnections.length + 1),
                     outletThrust: parentNode?.data.outletThrust / (otherConnections.length + 1),
-                    // inletThrust: parentNode?.data.outletThrust ,
-                    // outletThrust: parentNode?.data.outletThrust,
                   },
                 };
               }
@@ -172,7 +167,6 @@ export function Flow() {
             }
           }}
         />
-        {/* <Background /> */}
         {/* <Panel position="top-left">
           <Button>Очистить</Button>
         </Panel> */}

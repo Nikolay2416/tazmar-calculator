@@ -3,6 +3,8 @@ import { Handle, Position, useReactFlow, NodeProps } from 'reactflow';
 import { Popover, Select, Button, ConfigProvider } from 'antd';
 import { UnorderedListOutlined } from '@ant-design/icons';
 
+import { setIsNodeRemove } from '../../store/slices/idNodeToUpdate';
+import { useAppDispatch } from '../../hook/store';
 import { useUpdateChildNode } from '../../hook/useUpdateChildNode';
 import { equipment } from '../../data/equipment';
 import { Equipment, StatusType } from '../../type/type';
@@ -14,9 +16,11 @@ export const nodeTypes = { custom: CustomNode };
 
 export function CustomNode({ id, data, isConnectable }: NodeProps) {
   const { label, inletThrust, outletThrust, workingLoad, loadLimit } = data;
-  const { setNodes, getEdges, deleteElements, getNodes } = useReactFlow();
+  const { setNodes, getEdges, deleteElements } = useReactFlow();
   const [valueSelect, setValueSelect] = useState<string>(label);
   const [оnConnectTarget, setOnConnectTarget] = useState<string>('');
+  const dispatch = useAppDispatch();
+  const edges = getEdges();
 
   let styleBlock: string = cls.textUpdaterNodeDefolt;
   let styleWorkingLoad: string = cls.contentPopoverText;
@@ -42,26 +46,39 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
     styleLoadLimit = cls.contentPopoverTextError;
   }
 
-  useEffect(() => {
-    setOnConnectTarget(id);
-  }, [valueSelect]);
-
   useUpdateChildNode(id, setOnConnectTarget);
 
   useEffect(() => {
     const value = equipment.find((item: Equipment) => item.value === valueSelect);
     setNodes((prevNodes) => {
+      if (id === '0') {
+        return prevNodes;
+      }
+
       const updatedNodes = prevNodes.map((node) => {
         if (node.id === id) {
-          let recalculationOutletThrust;
+          const childNode = prevNodes.find((node) => node.id === id);
+          const parentNode = prevNodes.find((node) => node.id === childNode?.data.parentNode);
+          const otherParentConnections = edges.filter((edge) => edge.source === parentNode?.id);
+          const parentConnectionsWithNode = edges.filter((edge) => edge.target === childNode?.id);
 
-          // Доделать
+          let parentOutletThrust = 0;
+          prevNodes.map((node) => {
+            for (let i = 0; i < parentConnectionsWithNode.length; i++) {
+              if (parentConnectionsWithNode && node.id === parentConnectionsWithNode[i]?.source) {
+                parentOutletThrust += node.data.outletThrust;
+                return;
+              }
+            }
+          });
+
+          let recalculationOutletThrust;
           if (value?.category === 'Гиня4') {
-            recalculationOutletThrust = outletThrust * 4;
+            recalculationOutletThrust = parentOutletThrust * 4;
           } else if (value?.category === 'Гиня7') {
-            recalculationOutletThrust = outletThrust * 7;
+            recalculationOutletThrust = parentOutletThrust * 7;
           } else {
-            recalculationOutletThrust = outletThrust;
+            recalculationOutletThrust = parentOutletThrust;
           }
 
           return {
@@ -69,7 +86,7 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
             data: {
               ...value,
               inletThrust: inletThrust,
-              outletThrust: recalculationOutletThrust,
+              outletThrust: recalculationOutletThrust / otherParentConnections.length,
               parentNode: node.data.parentNode,
             },
           };
@@ -81,8 +98,11 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
   }, [valueSelect]);
 
   const onClickRemove = (id: string) => {
-    const otherConnections = getEdges().filter((edge) => edge.source === id || edge.target === id);
+    const otherConnections = edges.filter((edge) => edge.source === id || edge.target === id);
+
+    console.log(otherConnections)
     deleteElements({ nodes: [{ id }], edges: otherConnections });
+    dispatch(setIsNodeRemove(true));
   };
 
   const content = (
@@ -100,6 +120,7 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
   return (
     <div className={`${styleBlock} ${cls.textUpdaterNode}`}>
       {label !== 'Экскаватор' && <Handle type="target" position={Position.Top} isConnectable={isConnectable} />}
+      {/* {id} */}
       <ConfigProvider
         theme={{
           components: {

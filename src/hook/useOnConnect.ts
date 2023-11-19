@@ -1,13 +1,11 @@
 import { useCallback, Dispatch, SetStateAction } from 'react';
-import { addEdge, Node, Edge, OnConnect } from 'reactflow';
+import { addEdge, OnConnect, useReactFlow } from 'reactflow';
 
-export function useOnConnect(
-  nodes: Node[],
-  setNodes: Dispatch<SetStateAction<Node[]>>,
-  edges: Edge[],
-  setEdges: Dispatch<SetStateAction<Edge[]>>,
-  setOnConnectTarget: Dispatch<SetStateAction<string>>,
-) {
+export function useOnConnect(setOnConnectTarget: Dispatch<SetStateAction<string>>) {
+  const { getEdges, getNodes, setNodes, setEdges } = useReactFlow();
+  const nodes = getNodes();
+  const edges = getEdges();
+
   const onConnect: OnConnect = useCallback(
     (params) => {
       const { source, target } = params;
@@ -16,7 +14,6 @@ export function useOnConnect(
 
       const childEdges = edges.filter((edge) => edge.source === target);
       if (childEdges.length > 0 && target) {
-        // setOnConnectTarget(target);
         setOnConnectTarget('0');
       }
 

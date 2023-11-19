@@ -16,6 +16,11 @@ export function CustomEdge(props: EdgeProps) {
     targetPosition,
   });
 
+  const onClickRemove = () => {
+    
+    deleteElements({ edges: [{ id }] });
+  };
+
   return (
     <>
       <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />
@@ -29,7 +34,7 @@ export function CustomEdge(props: EdgeProps) {
           }}
           className="nodrag nopan"
         >
-          <button className="edgebutton" onClick={() => deleteElements({ edges: [{ id }] })}>
+          <button className="edgebutton" onClick={() => onClickRemove()}>
             ×
           </button>
         </div>
