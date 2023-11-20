@@ -17,7 +17,6 @@ export function CustomEdge(props: EdgeProps) {
   });
 
   const onClickRemove = () => {
-    
     deleteElements({ edges: [{ id }] });
   };
 

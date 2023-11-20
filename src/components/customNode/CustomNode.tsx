@@ -3,7 +3,7 @@ import { Handle, Position, useReactFlow, NodeProps } from 'reactflow';
 import { Popover, Select, Button, ConfigProvider } from 'antd';
 import { UnorderedListOutlined } from '@ant-design/icons';
 
-import { setIsNodeRemove } from '../../store/slices/idNodeToUpdate';
+import { setIsNodeRemove } from '../../store/slices/generalReducer';
 import { useAppDispatch } from '../../hook/store';
 import { useUpdateChildNode } from '../../hook/useUpdateChildNode';
 import { equipment } from '../../data/equipment';
@@ -16,11 +16,12 @@ export const nodeTypes = { custom: CustomNode };
 
 export function CustomNode({ id, data, isConnectable }: NodeProps) {
   const { label, inletThrust, outletThrust, workingLoad, loadLimit } = data;
-  const { setNodes, getEdges, deleteElements } = useReactFlow();
+  const { getNodes, setNodes, getEdges, deleteElements } = useReactFlow();
   const [valueSelect, setValueSelect] = useState<string>(label);
   const [оnConnectTarget, setOnConnectTarget] = useState<string>('');
   const dispatch = useAppDispatch();
   const edges = getEdges();
+  const nodes = getNodes();
 
   let styleBlock: string = cls.textUpdaterNodeDefolt;
   let styleWorkingLoad: string = cls.contentPopoverText;
@@ -97,10 +98,27 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
     });
   }, [valueSelect]);
 
-  const onClickRemove = (id: string) => {
+  const onClickRemove = () => {
     const otherConnections = edges.filter((edge) => edge.source === id || edge.target === id);
+    const edgesSourceId = edges.filter((edge) => edge.source === id);
+    const childConnections = edges.find((edge) => edge.target === edgesSourceId[0]?.target && edge.source !== id);
 
-    console.log(otherConnections)
+    setNodes((prevNodes) => {
+      const updatedNodes = prevNodes.map((node) => {
+        if (node.id === childConnections?.target) {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              parentNode: childConnections?.source,
+            },
+          };
+        }
+        return node;
+      });
+      return updatedNodes;
+    });
+
     deleteElements({ nodes: [{ id }], edges: otherConnections });
     dispatch(setIsNodeRemove(true));
   };
@@ -111,7 +129,7 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
       <p>Выходная тяга: {Math.round(outletThrust * 100) / 100}тс</p>
       <p className={styleWorkingLoad}>Рабочая нагрузка: {workingLoad}тс</p>
       <p className={styleLoadLimit}>Максимальная нагрузка: {loadLimit}тс</p>
-      <Button className={cls.antdButton} danger onClick={() => onClickRemove(id)}>
+      <Button className={cls.antdButton} danger disabled={id === '0' ? true : false} onClick={() => onClickRemove()}>
         Удалить
       </Button>
     </div>

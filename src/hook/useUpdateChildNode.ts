@@ -1,7 +1,7 @@
 import { useEffect, Dispatch, SetStateAction } from 'react';
 import { useReactFlow } from 'reactflow';
 import { useAppSelector } from '../hook/store';
-import { setIsNodeRemove } from '../store/slices/idNodeToUpdate';
+import { setIsNodeRemove } from '../store/slices/generalReducer';
 import { useAppDispatch } from '../hook/store';
 
 export function useUpdateChildNode(оnConnectTarget: string, setOnConnectTarget: Dispatch<SetStateAction<string>>) {
@@ -36,8 +36,6 @@ export function useUpdateChildNode(оnConnectTarget: string, setOnConnectTarget:
       const otherParentConnections = edges.filter((edge) => edge.source === parentNode?.id);
       const parentConnectionsWithNode = edges.filter((edge) => edge.target === childNode?.id);
 
-      // console.log(childNode?.id, parentNode?.id)
-
       let parentOutletThrust = 0;
       nodes.map((node) => {
         for (let i = 0; i < parentConnectionsWithNode.length; i++) {
@@ -47,6 +45,12 @@ export function useUpdateChildNode(оnConnectTarget: string, setOnConnectTarget:
           }
         }
       });
+
+      
+      // if(targetId === '0') {
+      //   console.log(parentOutletThrust, otherParentConnections)
+      // }
+      // console.log(targetId)
 
       setNodes((prevNodes) => {
         const updatedNodes = prevNodes.map((node) => {
@@ -78,6 +82,10 @@ export function useUpdateChildNode(оnConnectTarget: string, setOnConnectTarget:
         setOnConnectTarget(childNode?.id ?? '');
         return updatedNodes;
       });
+
+      // console.log(childNode?.id)
+      // setOnConnectTarget(childNode?.id ?? '');
     });
+    // setOnConnectTarget(parentEdges.map((edge) => edge.target).join(','));
   };
 }

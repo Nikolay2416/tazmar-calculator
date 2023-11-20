@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import generalReducer from "./slices/idNodeToUpdate";
+import generalReducer from "./slices/generalReducer";
 
 export const store = configureStore({
   reducer: {

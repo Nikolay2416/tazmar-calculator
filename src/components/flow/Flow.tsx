@@ -26,6 +26,7 @@ const initialNodes: Node = {
   type: 'custom',
   data: equipmentExcavator,
   position: { x: 0, y: 20 },
+  deletable: false,
 };
 
 export function Flow() {
@@ -40,13 +41,12 @@ export function Flow() {
     ? reactFlowWrapper.current.clientWidth / 2 - 111.5
     : 0;
 
-  const onConnect = useOnConnect(setOnConnectTarget);
-  useUpdateChildNode(оnConnectTarget, setOnConnectTarget);
+  console.log(оnConnectTarget);
 
   useEffect(() => {
     if (firstLocationNode && nodes.length === 0) {
-      setNodes((nds) =>
-        nds.concat({
+      setNodes((prevNodes) =>
+        prevNodes.concat({
           ...initialNodes,
           position: { x: firstLocationNode, y: 20 },
         }),
@@ -62,11 +62,13 @@ export function Flow() {
           }
           return node;
         });
-
         return updatedNodes;
       });
     }
   }, [firstLocationNode]);
+
+  useUpdateChildNode(оnConnectTarget, setOnConnectTarget);
+  const onConnect = useOnConnect(setOnConnectTarget);
 
   const onConnectStart: OnConnectStart = useCallback((_, { nodeId }) => {
     if (!nodeId) return;
@@ -148,19 +150,19 @@ export function Flow() {
       >
         <Controls />
         <MiniMap
-          nodeStrokeColor={(n) => {
-            if (n.data.inletThrust > n.data.loadLimit) {
+          nodeStrokeColor={(node) => {
+            if (node.data.inletThrust > node.data.loadLimit) {
               return '#ff0072';
-            } else if (n.data.inletThrust > n.data.workingLoad) {
+            } else if (node.data.inletThrust > node.data.workingLoad) {
               return '#ffc53d';
             } else {
               return '#1A192B';
             }
           }}
-          nodeColor={(n) => {
-            if (n.data.inletThrust > n.data.loadLimit) {
+          nodeColor={(node) => {
+            if (node.data.inletThrust > node.data.loadLimit) {
               return '#ff0072';
-            } else if (n.data.inletThrust > n.data.workingLoad) {
+            } else if (node.data.inletThrust > node.data.workingLoad) {
               return '#ffc53d';
             } else {
               return '#eee';
