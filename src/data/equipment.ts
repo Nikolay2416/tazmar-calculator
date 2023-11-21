@@ -26,7 +26,8 @@ export const equipment: Equipment[] = [
   // Блок гиней
   {
     value: 'Блок с 4 блоками',
-    label: 'Блок с 4 блоками',
+    // label: 'Блок с 4 блоками',
+    label: 'Блок с 4 блоками/ 40тс, 40тс',
     workingLoad: 40,
     loadLimit: 40,
     quantity: 1,
@@ -36,7 +37,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'Блок с 7 блоками',
-    label: 'Блок с 7 блоками',
+    // label: 'Блок с 7 блоками',
+    label: 'Блок с 7 блоками/ 80тс, 100тс',
     workingLoad: 80,
     loadLimit: 100,
     quantity: 1,
@@ -48,7 +50,8 @@ export const equipment: Equipment[] = [
   // Блоки
   {
     value: 'Блок одношкивный 50-тонный',
-    label: 'Блок одношкивный 50-тонный',
+    // label: 'Блок одношкивный 50-тонный',
+    label: 'Блок одношкивный 50-тонный/ 50тс, 50тс',
     workingLoad: 50,
     loadLimit: 50,
     quantity: 1,
@@ -60,7 +63,8 @@ export const equipment: Equipment[] = [
   // Трос/цепь
   {
     value: 'д19,5мм -120м 2шт',
-    label: 'д19,5мм -120м 2шт',
+    // label: 'д19,5мм -120м 2шт',
+    label: 'д19,5мм -120м 2шт/ 10тс, 20.9тс',
     workingLoad: 10,
     loadLimit: 20.9,
     quantity: 1,
@@ -70,7 +74,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'д22-1000м',
-    label: 'д22-1000м',
+    // label: 'д22-1000м',
+    label: 'д22-1000м/ 12тс, 27.5тс',
     workingLoad: 12,
     loadLimit: 27.5,
     quantity: 1,
@@ -80,7 +85,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'д28мм-1000м',
-    label: 'д28мм-1000м',
+    // label: 'д28мм-1000м',
+    label: 'д28мм-1000м/ 15тс, 52.4тс',
     workingLoad: 15,
     loadLimit: 52.4,
     quantity: 1,
@@ -90,7 +96,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'д29мм-500м',
-    label: 'д29мм-500м',
+    // label: 'д29мм-500м',
+    label: 'д29мм-500м/ 15тс, 55.4тс',
     workingLoad: 15,
     loadLimit: 55.4,
     quantity: 1,
@@ -100,7 +107,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'д39мм-500м',
-    label: 'д39мм-500м',
+    // label: 'д39мм-500м',
+    label: 'д39мм-500м/ 25тс, 92.9тс',
     workingLoad: 25,
     loadLimit: 92.9,
     quantity: 1,
@@ -110,7 +118,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'д42мм-400м',
-    label: 'д42мм-400м',
+    // label: 'д42мм-400м',
+    label: 'д42мм-400м/ 30тс, 107.5тс',
     workingLoad: 30,
     loadLimit: 107.5,
     quantity: 1,
@@ -120,7 +129,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'д50мм-275м',
-    label: 'д50мм-275м',
+    // label: 'д50мм-275м',
+    label: 'д50мм-275м/ 40тс, 139.5тс',
     workingLoad: 40,
     loadLimit: 139.5,
     quantity: 1,
@@ -130,7 +140,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'Синтетический трос желтый',
-    label: 'Синтетический трос желтый',
+    // label: 'Синтетический трос желтый',
+    label: 'Синтетический трос желтый/ 50тс, 150тс',
     workingLoad: 50,
     loadLimit: 150,
     quantity: 1,
@@ -140,7 +151,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'Стропы канатные(чалки) металлические',
-    label: 'Стропы канатные(чалки) металлические',
+    // label: 'Стропы канатные(чалки) металлические',
+    label: 'Стропы канатные(чалки) металлические/ 50тс, 50тс',
     workingLoad: 50,
     loadLimit: 50,
     quantity: 1,
@@ -152,7 +164,8 @@ export const equipment: Equipment[] = [
   // Цепи
   {
     value: '12смычек -83звена',
-    label: '12смычек -83звена',
+    // label: '12смычек -83звена',
+    label: '12смычек -83звена/ 50тс, 120тс',
     workingLoad: 50,
     loadLimit: 120,
     quantity: 1,
@@ -162,7 +175,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: '4смычки-100м цепь 62-го калибра',
-    label: '4смычки-100м цепь 62-го калибра',
+    // label: '4смычки-100м цепь 62-го калибра',
+    label: '4смычки-100м цепь 62-го калибра/ 70тс, 147тс',
     workingLoad: 70,
     loadLimit: 147,
     quantity: 1,
@@ -174,7 +188,8 @@ export const equipment: Equipment[] = [
   // Скобы
   {
     value: 'Скоба 35-тонная омегообразная',
-    label: 'Скоба 35-тонная омегообразная',
+    // label: 'Скоба 35-тонная омегообразная',
+    label: 'Скоба 35-тонная омегообразная/ 35тс, 125тс',
     workingLoad: 35,
     loadLimit: 125,
     quantity: 1,
@@ -184,7 +199,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'Скоба 55-тонная омегообразная',
-    label: 'Скоба 55-тонная омегообразная',
+    // label: 'Скоба 55-тонная омегообразная',
+    label: 'Скоба 55-тонная омегообразная/ 55тс, 220тс',
     workingLoad: 55,
     loadLimit: 220,
     quantity: 1,
@@ -194,7 +210,8 @@ export const equipment: Equipment[] = [
   },
   {
     value: 'Скоба 155-тонная омегообразная',
-    label: 'Скоба 155-тонная омегообразная',
+    // label: 'Скоба 155-тонная омегообразная',
+    label: 'Скоба 155-тонная омегообразная/ 155тс, 450тс',
     workingLoad: 155,
     loadLimit: 450,
     quantity: 1,

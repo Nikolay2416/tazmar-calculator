@@ -3,9 +3,8 @@ import { Handle, Position, useReactFlow, NodeProps } from 'reactflow';
 import { Popover, Select, Button, ConfigProvider } from 'antd';
 import { UnorderedListOutlined } from '@ant-design/icons';
 
-import { setIsNodeRemove } from '../../store/slices/generalReducer';
+import { setIsNodeRemove, setIdNodeToUpdate } from '../../store/slices/generalReducer';
 import { useAppDispatch } from '../../hook/store';
-import { useUpdateChildNode } from '../../hook/useUpdateChildNode';
 import { equipment } from '../../data/equipment';
 import { Equipment, StatusType } from '../../type/type';
 
@@ -14,14 +13,13 @@ import './reactFlowCustomNode.css';
 
 export const nodeTypes = { custom: CustomNode };
 
-export function CustomNode({ id, data, isConnectable }: NodeProps) {
+export function CustomNode({ id, data, isConnectable, ...props }: NodeProps) {
   const { label, inletThrust, outletThrust, workingLoad, loadLimit } = data;
-  const { getNodes, setNodes, getEdges, deleteElements } = useReactFlow();
+  const { setNodes, getEdges, deleteElements } = useReactFlow();
   const [valueSelect, setValueSelect] = useState<string>(label);
-  const [оnConnectTarget, setOnConnectTarget] = useState<string>('');
+  const [openPopover, setOpenPopover] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const edges = getEdges();
-  const nodes = getNodes();
 
   let styleBlock: string = cls.textUpdaterNodeDefolt;
   let styleWorkingLoad: string = cls.contentPopoverText;
@@ -47,7 +45,11 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
     styleLoadLimit = cls.contentPopoverTextError;
   }
 
-  useUpdateChildNode(id, setOnConnectTarget);
+  useEffect(() => {
+    if (inletThrust > loadLimit) {
+      handleOpenChange(true);
+    } 
+  }, [inletThrust, loadLimit, workingLoad]);
 
   useEffect(() => {
     const value = equipment.find((item: Equipment) => item.value === valueSelect);
@@ -98,6 +100,10 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
     });
   }, [valueSelect]);
 
+  useEffect(() => {
+    dispatch(setIdNodeToUpdate(id));
+  }, [outletThrust, props.xPos, props.yPos]);
+
   const onClickRemove = () => {
     const otherConnections = edges.filter((edge) => edge.source === id || edge.target === id);
     const edgesSourceId = edges.filter((edge) => edge.source === id);
@@ -123,6 +129,10 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
     dispatch(setIsNodeRemove(true));
   };
 
+  function handleOpenChange(newOpen: boolean) {
+    setOpenPopover(newOpen);
+  }
+
   const content = (
     <div className={cls.contentPopover}>
       <p>Входная тяга: {Math.round(inletThrust * 100) / 100}тс</p>
@@ -138,7 +148,6 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
   return (
     <div className={`${styleBlock} ${cls.textUpdaterNode}`}>
       {label !== 'Экскаватор' && <Handle type="target" position={Position.Top} isConnectable={isConnectable} />}
-      {/* {id} */}
       <ConfigProvider
         theme={{
           components: {
@@ -156,7 +165,7 @@ export function CustomNode({ id, data, isConnectable }: NodeProps) {
           status={statusType}
         />
       </ConfigProvider>
-      <Popover content={content} trigger="click" placement="right">
+      <Popover content={content} trigger="click" placement="right" open={openPopover} onOpenChange={handleOpenChange}>
         <UnorderedListOutlined className={cls.antdIcon} />
       </Popover>
       <Handle type="source" position={Position.Bottom} id="b" isConnectable={isConnectable} />

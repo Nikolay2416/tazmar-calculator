@@ -9,7 +9,9 @@ import ReactFlow, {
   useEdgesState,
   useReactFlow,
   MiniMap,
+  Panel,
 } from 'reactflow';
+import { Button } from 'antd';
 
 import { useOnConnect } from '../../hook/useOnConnect';
 import { useUpdateChildNode } from '../../hook/useUpdateChildNode';
@@ -20,6 +22,7 @@ import { Equipment } from '../../type/type';
 
 import cls from './flow.module.css';
 
+const flowKey = 'example-flow';
 const equipmentExcavator = equipment.find((item: Equipment) => item.value === 'Экскаватор');
 const initialNodes: Node = {
   id: '0',
@@ -33,15 +36,15 @@ export function Flow() {
   const { project, getNode, getEdges } = useReactFlow();
   const connectingNodeId = useRef<string>('');
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
-  const [оnConnectTarget, setOnConnectTarget] = useState<string>('');
+  const [оnConnectTarget, setOnConnectTarget] = useState<string[]>([]);
   const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
+  const [rfInstance, setRfInstance] = useState<any>(null);
+  const { setViewport } = useReactFlow();
 
   const firstLocationNode: number = reactFlowWrapper.current?.clientWidth
-    ? reactFlowWrapper.current.clientWidth / 2 - 111.5
+    ? reactFlowWrapper.current.clientWidth / 2 - 146.5
     : 0;
-
-  console.log(оnConnectTarget);
 
   useEffect(() => {
     if (firstLocationNode && nodes.length === 0) {
@@ -97,7 +100,8 @@ export function Flow() {
             outletThrust: parentNode?.data.outletThrust / (otherConnections.length + 1),
           },
           position: project({
-            x: (event as MouseEvent).clientX - left - 111.5,
+            // x: (event as MouseEvent).clientX - left - 111.5,
+            x: (event as MouseEvent).clientX - left - 146.5,
             y: (event as MouseEvent).clientY - top,
           }),
           type: 'custom',
@@ -106,7 +110,7 @@ export function Flow() {
         setNodes((nds) => nds.concat(newNode));
 
         if (parentNode?.id) {
-          setOnConnectTarget(parentNode?.id);
+          setOnConnectTarget([parentNode?.id]);
         }
 
         setNodes((prevNodes) => {
@@ -134,6 +138,45 @@ export function Flow() {
     [project],
   );
 
+  const onSave = useCallback(() => {
+    if (rfInstance) {
+      const flow = rfInstance.toObject();
+      localStorage.setItem(flowKey, JSON.stringify(flow));
+    }
+  }, [rfInstance]);
+
+  const onRestore = useCallback(() => {
+    const restoreFlow = async () => {
+      const storedFlow = localStorage.getItem(flowKey); 
+      if (storedFlow) {
+        const flow = JSON.parse(storedFlow);
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setViewport({ x, y, zoom });
+      }
+    };
+  
+    restoreFlow();
+  }, [setNodes, setViewport, flowKey]);
+
+  const onDelete = useCallback(() => {
+    localStorage.removeItem(flowKey);
+    setEdges([]);
+    setNodes((prevNodes) => {
+      const defNode = prevNodes.filter((node) => node.id === '0');
+      return defNode;
+    });
+  }, []);
+
+  useEffect(() => {
+    onRestore();
+  }, []);
+
+  useEffect(() => {
+    onSave();
+  }, [nodes, edges]);
+
   return (
     <div className={cls.bodyReactFlow} ref={reactFlowWrapper}>
       <ReactFlow
@@ -147,6 +190,7 @@ export function Flow() {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         className={cls.reactFlow}
+        onInit={setRfInstance}
       >
         <Controls />
         <MiniMap
@@ -169,9 +213,9 @@ export function Flow() {
             }
           }}
         />
-        {/* <Panel position="top-left">
-          <Button>Очистить</Button>
-        </Panel> */}
+        <Panel position="top-left">
+          <Button size="small" onClick={onDelete}>Очистить</Button>
+        </Panel>
       </ReactFlow>
     </div>
   );

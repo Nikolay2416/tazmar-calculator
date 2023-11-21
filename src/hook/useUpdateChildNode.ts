@@ -1,32 +1,38 @@
-import { useEffect, Dispatch, SetStateAction } from 'react';
-import { useReactFlow } from 'reactflow';
+import { useEffect, Dispatch, SetStateAction, useState } from 'react';
+import { useReactFlow, Edge } from 'reactflow';
 import { useAppSelector } from '../hook/store';
-import { setIsNodeRemove } from '../store/slices/generalReducer';
+import { setIsNodeRemove, setIdNodeToUpdate } from '../store/slices/generalReducer';
 import { useAppDispatch } from '../hook/store';
 
-export function useUpdateChildNode(оnConnectTarget: string, setOnConnectTarget: Dispatch<SetStateAction<string>>) {
+export function useUpdateChildNode(оnConnectTarget: string[], setOnConnectTarget: Dispatch<SetStateAction<string[]>>) {
   const { getEdges, getNodes, setNodes } = useReactFlow();
   const dispatch = useAppDispatch();
-  const { isNodeRemove } = useAppSelector((state) => state.generalReducer);
+  const { isNodeRemove, idNodeToUpdate } = useAppSelector((state) => state.generalReducer);
   const nodes = getNodes();
   const edges = getEdges();
 
   useEffect(() => {
-    if (оnConnectTarget) {
+    if (оnConnectTarget.length > 0) {
       updateAllChildNodes(оnConnectTarget);
     }
 
     if (isNodeRemove) {
-      updateAllChildNodes('0');
+      updateAllChildNodes(['0']);
       dispatch(setIsNodeRemove(false));
+    }
+
+    if (idNodeToUpdate) {
+      updateAllChildNodes(['0']);
+      dispatch(setIdNodeToUpdate(''));
     }
   }, [nodes, edges]);
 
-  const updateAllChildNodes = (targetId: string) => {
-    const parentEdges = edges.filter((edge) => edge.source === targetId);
+  const updateAllChildNodes = (arrTargetId: string[]) => {
+    const parentEdges = edges.filter((edge) => arrTargetId.includes(edge.source));
+    let arrId: string[] = [];
 
     if (parentEdges.length === 0) {
-      setOnConnectTarget('');
+      setOnConnectTarget([]);
       return;
     }
 
@@ -45,12 +51,6 @@ export function useUpdateChildNode(оnConnectTarget: string, setOnConnectTarget:
           }
         }
       });
-
-      
-      // if(targetId === '0') {
-      //   console.log(parentOutletThrust, otherParentConnections)
-      // }
-      // console.log(targetId)
 
       setNodes((prevNodes) => {
         const updatedNodes = prevNodes.map((node) => {
@@ -79,13 +79,12 @@ export function useUpdateChildNode(оnConnectTarget: string, setOnConnectTarget:
           return node;
         });
 
-        setOnConnectTarget(childNode?.id ?? '');
+        if(childNode?.id) {
+          arrId.push(childNode?.id);
+        }
         return updatedNodes;
       });
-
-      // console.log(childNode?.id)
-      // setOnConnectTarget(childNode?.id ?? '');
     });
-    // setOnConnectTarget(parentEdges.map((edge) => edge.target).join(','));
+    setOnConnectTarget(arrId);
   };
 }
