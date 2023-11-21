@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/tazmar-calculator/static/css/main.5f0ed64c.css",
-    "main.js": "/tazmar-calculator/static/js/main.a8672a9e.js",
+    "main.css": "/tazmar-calculator/static/css/main.2f77df56.css",
+    "main.js": "/tazmar-calculator/static/js/main.7072a081.js",
     "index.html": "/tazmar-calculator/index.html",
-    "main.5f0ed64c.css.map": "/tazmar-calculator/static/css/main.5f0ed64c.css.map",
-    "main.a8672a9e.js.map": "/tazmar-calculator/static/js/main.a8672a9e.js.map"
+    "main.2f77df56.css.map": "/tazmar-calculator/static/css/main.2f77df56.css.map",
+    "main.7072a081.js.map": "/tazmar-calculator/static/js/main.7072a081.js.map"
   },
   "entrypoints": [
-    "static/css/main.5f0ed64c.css",
-    "static/js/main.a8672a9e.js"
+    "static/css/main.2f77df56.css",
+    "static/js/main.7072a081.js"
   ]
 }
